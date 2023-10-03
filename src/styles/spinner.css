@@ -4,6 +4,7 @@
     border-radius: 50%;
     display: inline-block;
     position: relative;
+    margin: 5rem auto;
     border: 3px solid;
     border-color: var(--color-primary-600) transparent var(--color-grey-500) transparent;
     box-sizing: border-box;

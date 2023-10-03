@@ -1,33 +1,58 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import NavBar from './NavBar';
 import SideBar from './SideBar';
 import styled, { css } from 'styled-components';
-// import WelcomeScreen from './WelcomeScreen';
+import useGetProjects from '../features/projects/useGetProjects';
+import Spinner from './Spinner';
+import Heading from './Heading';
+import BasicScreen from './BasicScreen';
 
 const StyledAppLayout = styled.div`
+  margin-top: 8rem;
+`;
+
+const SpinContainer = styled.div`
   display: grid;
-  ${props =>
-    props.grid &&
-    css`
-      grid-template-columns: 300px 1fr;
-    `}
+  place-items: center;
 `;
 
 const Main = styled.main`
-  padding: 1rem 2rem;
-  min-height: 89.5vh;
+  padding: 1rem;
+  ${props =>
+    props.grid === 'true' &&
+    css`
+      padding: 1rem 1rem 1rem 31.5rem;
+    `}
 `;
 
 function AppLayout() {
+  const { isLoading: isGettingProjects, projects } = useGetProjects();
+  const location = useLocation();
+  const currentRoute = location.pathname;
+
   return (
     <>
       <NavBar />
       <StyledAppLayout>
-        {/* <SideBar /> */}
-        <Main>
-          {/* <WelcomeScreen name="task" /> */}
-          <Outlet />
-        </Main>
+        {isGettingProjects && currentRoute === '/home' ? (
+          <SpinContainer>
+            <Spinner />
+            <Heading as="h3" style={{ margin: '0 auto' }}>
+              Getting Projects ...
+            </Heading>
+          </SpinContainer>
+        ) : null}
+        {projects?.length ? <SideBar /> : null}
+        {projects?.length && currentRoute === '/home' ? (
+          <Main grid={projects?.length && 'true'}>
+            <BasicScreen />
+          </Main>
+        ) : null}
+        {!isGettingProjects && (
+          <Main grid={projects?.length && 'true'}>
+            <Outlet />
+          </Main>
+        )}
       </StyledAppLayout>
     </>
   );

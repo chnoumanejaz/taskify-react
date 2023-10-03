@@ -3,21 +3,29 @@ import Logo from './Logo';
 import { Link, NavLink } from 'react-router-dom';
 import { FaRegMoon } from 'react-icons/fa';
 import { FiUser, FiUsers } from 'react-icons/fi';
-// import { BiSun } from 'react-icons/bi';
+import { BiSun } from 'react-icons/bi';
 import { HiOutlineLogout } from 'react-icons/hi';
 import ButtonIcon from './ButtonIcon';
 import useLogout from '../features/authentication/useLogout';
 import SpinnerMini from './SpinnerMini';
 import useGetUser from '../features/authentication/useGetUser';
 import formatDate from '../utils/formatDate';
+import { useDarkMode } from '../context/darkModeContext';
 
 const StyledNavBar = styled.nav`
-  background-color: var(--color-grey-50);
+  background-color: var(--color-grey-0);
   padding: 1rem 3rem;
   border-bottom: 1px solid var(--color-grey-100);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 0 auto;
 
   & div {
     display: flex;
@@ -82,6 +90,8 @@ function NavBar() {
   const { logout, isLoading } = useLogout();
   const { user } = useGetUser();
 
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+
   return (
     <StyledNavBar>
       <Link to="/">
@@ -113,8 +123,8 @@ function NavBar() {
 
         {/* FIXME: below to buttons are not equal in padding as of above to  */}
         <li>
-          <ButtonIcon disabled={isLoading}>
-            <FaRegMoon />
+          <ButtonIcon disabled={isLoading} onClick={toggleDarkMode}>
+            {!isDarkMode ? <FaRegMoon /> : <BiSun />}
           </ButtonIcon>
         </li>
         <li>

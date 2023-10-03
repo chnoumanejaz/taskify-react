@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import Button from './Button';
 import { MdOutlineCreateNewFolder, MdAddTask } from 'react-icons/md';
 import Heading from './Heading';
+import Modal from './Modal';
+import AddProjectForm from './AddProjectForm';
 
 const StyledMessageContainer = styled.div`
   display: flex;
@@ -37,28 +39,37 @@ const StyledMessageContainer = styled.div`
 /* eslint-disable react/prop-types */
 function WelcomeScreen({ name = 'project' }) {
   return (
-    <StyledMessageContainer>
-      <div>
-        <Heading as="h1">
-          {name === 'project' ? '👋 Welcome' : '😉 Add tasks'}
-        </Heading>
-        <p>
-          <span className="span">Taskify </span> enables effortless project
-          management.
-        </p>
-        <p>
-          {name === 'task'
-            ? 'Start adding your tasks'
-            : 'Start by creating your 1st project'}
-        </p>
-      </div>
-      <Button
-        iconEnd={
-          name === 'project' ? <MdOutlineCreateNewFolder /> : <MdAddTask />
-        }>
-        {name === 'task' ? 'Add a task' : 'Create new project'}
-      </Button>
-    </StyledMessageContainer>
+    <Modal>
+      <StyledMessageContainer>
+        <div>
+          <Heading as="h1">
+            {name === 'project' ? '👋 Welcome' : '😉 Add tasks'}
+          </Heading>
+          <p>
+            <span className="span">Taskify </span> enables effortless project
+            management.
+          </p>
+          <p>
+            {name === 'task'
+              ? 'Start adding your tasks'
+              : 'Start by creating your 1st project'}
+          </p>
+        </div>
+        {name === 'project' ? (
+          <Modal.Open openName="create-project">
+            <Button iconEnd={<MdOutlineCreateNewFolder />}>
+              Create new project
+            </Button>
+          </Modal.Open>
+        ) : (
+          <Button iconEnd={<MdAddTask />}>Add a Task</Button>
+        )}
+      </StyledMessageContainer>
+
+      <Modal.Window name="create-project">
+        <AddProjectForm />
+      </Modal.Window>
+    </Modal>
   );
 }
 

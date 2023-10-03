@@ -1,11 +1,7 @@
-import '../styles/spinnerMini.css'
+import '../styles/spinnerMini.css';
 
 function SpinnerMini() {
-  return (
-    <>
-      <span className="loader-mini"></span>
-    </>
-  );
+  return <span className="loader-mini"></span>;
 }
 
 export default SpinnerMini;

@@ -110,6 +110,7 @@ const GlobalStyles = createGlobalStyle`
     width: 6px;
     height: 4px;
 }
+/* BUG: fix the scrollbr for the mozilla firefox */
 
 ::-webkit-scrollbar-thumb {
     background-color: #222;

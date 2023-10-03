@@ -1,20 +1,38 @@
 import styled from 'styled-components';
-import ButtonIcon from './ButtonIcon';
 import { BiSearchAlt } from 'react-icons/bi';
-import { AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlinePlus } from 'react-icons/ai';
 import Heading from './Heading';
-import { NavLink } from 'react-router-dom';
 import Button from './Button';
+import useGetProjects from '../features/projects/useGetProjects';
+import Modal from './Modal';
+import AddProjectForm from './AddProjectForm';
+import Input from './Input';
+import ProjectItem from './ProjectItem';
+import { useState } from 'react';
+import ErrorMessage from './ErrorMessage';
 
 const StyledSideBar = styled.aside`
-  background-color: var(--color-grey-50);
+  background-color: var(--color-grey-0);
   border-right: 1px solid var(--color-grey-100);
-  padding: 1rem 1.5rem;
+  padding: 2rem 1.5rem;
   text-transform: uppercase;
+  position: fixed;
+  top: 7rem;
+  bottom: 0;
+  z-index: 9;
+  width: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
   & h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    & div {
+      display: flex;
+      align-items: center;
+      column-gap: 0.5rem;
+    }
   }
 
   & .tag {
@@ -27,15 +45,26 @@ const StyledSideBar = styled.aside`
   }
 `;
 
-const Form = styled.form`
+const Divider = styled.div`
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
-  font-size: 1.5rem;
+  position: relative;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-grey-100);
   & input {
-    border: 1px solid var(--color-grey-200);
-    padding: 0.1rem 2rem;
-    border-radius: 15rem;
+    width: 100%;
+    border-radius: 5rem;
+    padding: 0.7rem 1.5rem;
+    padding-left: 4rem;
+  }
+  & svg {
+    position: absolute;
+    width: 2.5rem;
+    height: 2.5rem;
+    top: 0.8rem;
+    left: 1rem;
+    color: var(--color-primary-600);
   }
 `;
 
@@ -43,70 +72,62 @@ const List = styled.ul`
   margin-top: 2rem;
 `;
 
-const ItemContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-
-  & button {
-    position: absolute;
-    right: 0.5rem;
-  }
-`;
-
-const StyledNavLink = styled(NavLink)`
-  text-transform: none;
-  flex-grow: 2;
-  & li {
-    background-color: var(--color-grey-100);
-    padding: 0.7rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin-bottom: 0.1rem;
-    border: 1px solid transparent;
-    border-bottom-color: var(--color-grey-200);
-  }
-
-  &:hover li {
-    background-color: var(--color-primary-50);
-    border: 1px solid var(--color-primary-200);
-  }
-
-  &.active li {
-    background-color: var(--color-primary-50);
-    border: 1px solid var(--color-primary-500);
-  }
-`;
-
 function SideBar() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const { projects } = useGetProjects();
+  
+  const filteredData = projects?.filter(project => {
+    return (
+      project.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+      project.category.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+  });
+
   return (
-    <StyledSideBar>
-      <Heading as="h2">
-        Projects <span className="tag">08</span>
-        <Button size="small">Create new</Button>
-      </Heading>
-      <Form>
-        <input type="text" placeholder="Search projects ..." />
-        <ButtonIcon rounded="true" type="submit">
+    <Modal>
+      <StyledSideBar>
+        <Heading as="h2">
+          <div>
+            Projects
+            <span className="tag">
+              {projects?.length < 10 ? '0' + projects.length : projects.length}
+            </span>
+          </div>
+          <Modal.Open openName="create-project">
+            <Button size="small" iconStart={<AiOutlinePlus />}>
+              New
+            </Button>
+          </Modal.Open>
+        </Heading>
+        <Divider>
+          <Input
+            type="text"
+            placeholder="Search by name, category"
+            forr="mainPage"
+            maxLength={100}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
           <BiSearchAlt />
-        </ButtonIcon>
-      </Form>
-      <List>
-        {[1, 2, 3, 4, 5].map((item, index) => (
-          <ItemContainer key={`${item}-${index}`}>
-            <StyledNavLink to={'/project/' + index}>
-              <li>Untitled Project</li>
-            </StyledNavLink>
-            <ButtonIcon size="small" danger>
-              <AiOutlineDelete />
-            </ButtonIcon>
-          </ItemContainer>
-        ))}
-      </List>
-    </StyledSideBar>
+        </Divider>
+        <List>
+          {filteredData.length > 0 ? (
+            filteredData.map(project => (
+              <ProjectItem project={project} key={project.id + project.name} />
+            ))
+          ) : (
+            <ErrorMessage
+              message="No Project found for that query"
+              query={searchQuery}
+            />
+          )}
+        </List>
+      </StyledSideBar>
+
+      <Modal.Window name="create-project">
+        <AddProjectForm />
+      </Modal.Window>
+    </Modal>
   );
 }
 

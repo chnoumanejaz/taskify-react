@@ -4,6 +4,7 @@ import { BiEdit } from 'react-icons/bi';
 import Modal from './Modal';
 import ConfirmDelete from './ConfirmDelete';
 import { useDeleteEmployee } from '../features/employees/useDeleteEmployee';
+import AddNewEmployeeForm from './AddNewEmployeeForm';
 
 const Card = styled.div`
   background-color: var(--color-grey-100);
@@ -136,6 +137,7 @@ const CardFooter = styled.div`
     `}
 `;
 
+// MAYBE: refactor this component if possible
 /* eslint-disable react/prop-types */
 function EmployeeCard({ employee, view }) {
   const { isLoading: isDeleting, deleteEmployee } = useDeleteEmployee();
@@ -173,9 +175,11 @@ function EmployeeCard({ employee, view }) {
                   <MdDeleteOutline />
                 </div>
               </Modal.Open>
-              <div>
-                <BiEdit />
-              </div>
+              <Modal.Open openName='update-standard'>
+                <div>
+                  <BiEdit />
+                </div>
+              </Modal.Open>
             </>
           )}
           {view === 'minimal' && (
@@ -185,9 +189,11 @@ function EmployeeCard({ employee, view }) {
                   <MdDeleteOutline />
                 </div>
               </Modal.Open>
-              <div className="edit-svg">
-                <BiEdit />
-              </div>
+              <Modal.Open openName="update-minimal">
+                <div className="edit-svg">
+                  <BiEdit />
+                </div>
+              </Modal.Open>
             </div>
           )}
 
@@ -207,6 +213,14 @@ function EmployeeCard({ employee, view }) {
               disabled={isDeleting}
               onConfirm={() => deleteEmployee(employee.id)}
             />
+          </Modal.Window>
+
+          <Modal.Window name="update-minimal">
+            <AddNewEmployeeForm employeeToUpdate={employee} />
+          </Modal.Window>
+          
+          <Modal.Window name="update-standard">
+            <AddNewEmployeeForm employeeToUpdate={employee} />
           </Modal.Window>
         </CardFooter>
       </Card>

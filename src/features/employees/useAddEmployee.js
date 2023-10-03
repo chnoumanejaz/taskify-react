@@ -7,11 +7,14 @@ export default function useAddEmployee() {
 
   const { isLoading, mutate: addEmployee } = useMutation({
     mutationFn: createEditEmployee,
-    onSuccess: () => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['employees'] });
-      toast.success('New employee added successfully!', {
-        autoClose: 2000,
-      });
+      toast.success(
+        `${data ? data.name : 'New Employee '} added successfully!`,
+        {
+          autoClose: 2000,
+        }
+      );
     },
     onError: err => toast.error(err.message),
   });

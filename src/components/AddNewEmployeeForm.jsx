@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import useAddEmployee from '../features/employees/useAddEmployee';
 import SpinnerMini from './SpinnerMini';
 import useGetUser from '../features/authentication/useGetUser';
+import { useUpdateEmployee } from '../features/employees/useUpdateEmployee';
 
 const StyledEmployeeFormContainer = styled.div`
   margin-top: 2rem;
@@ -22,16 +23,36 @@ const StyledForm = styled.form`
 `;
 
 /* eslint-disable react/prop-types */
-function AddNewEmployeeForm({ onCloseModal }) {
+function AddNewEmployeeForm({ employeeToUpdate = {}, onCloseModal }) {
   const { user } = useGetUser();
+  const { id: updateId, ...editValues } = employeeToUpdate;
+  const isUpdatingSession = Boolean(updateId);
+  const { isLoading: isAddingEmployee, addEmployee } = useAddEmployee();
+  const { isLoading: isUpdatingEmployee, updateEmployee } = useUpdateEmployee();
+
+  const isWorking = isAddingEmployee || isUpdatingEmployee;
+
+  const buttonLabels = {
+    true: {
+      true: 'Updating ...',
+      false: 'Update Employee',
+    },
+    false: {
+      true: 'Adding ...',
+      false: 'Add Employee',
+    },
+  };
+
+  // BUG: give the width to any of the input field to set the modal overlapping in the browser mozilla
+  const renderButtonContent = buttonLabels[isUpdatingSession][isWorking];
 
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
-
-  const { isLoading: isAddingEmployee, addEmployee } = useAddEmployee();
+  } = useForm({
+    defaultValues: isUpdatingSession ? editValues : {},
+  });
 
   function onSubmit(data) {
     const avatar =
@@ -39,22 +60,37 @@ function AddNewEmployeeForm({ onCloseModal }) {
 
     const modifiedData = { ...data, created_by: user?.id };
 
-    addEmployee(
-      {
-        ...modifiedData,
-        avatarUrl: avatar,
-      },
-      {
-        onSuccess: () => {
-          onCloseModal?.();
+    if (isUpdatingSession)
+      updateEmployee(
+        {
+          newEmployeeData: { ...data, avatarUrl: avatar },
+          id: updateId,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            onCloseModal?.();
+          },
+        }
+      );
+    else
+      addEmployee(
+        {
+          ...modifiedData,
+          avatarUrl: avatar,
+        },
+        {
+          onSuccess: () => {
+            onCloseModal?.();
+          },
+        }
+      );
   }
 
   return (
     <StyledEmployeeFormContainer>
-      <Heading as="h2">Add an employee</Heading>
+      <Heading as="h2">
+        {isUpdatingSession ? 'Update an employee' : 'Add an employee'}
+      </Heading>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <FormRow
           label="Name of Employee:"
@@ -65,7 +101,7 @@ function AddNewEmployeeForm({ onCloseModal }) {
             placeholder="Employee name "
             id="name"
             forr="mainPage"
-            disabled={isAddingEmployee}
+            disabled={isWorking}
             {...register('name', {
               required: 'Employee name is necessary!',
             })}
@@ -81,7 +117,7 @@ function AddNewEmployeeForm({ onCloseModal }) {
             placeholder="Employee phone no "
             id="phone"
             forr="mainPage"
-            disabled={isAddingEmployee}
+            disabled={isWorking}
             {...register('phone', {
               required: 'Employee phone number is necessary!',
               minLength: {
@@ -90,7 +126,7 @@ function AddNewEmployeeForm({ onCloseModal }) {
               },
               maxLength: {
                 value: 12,
-                message: 'Please Enter a vallid phone Number!',
+                message: 'Please Enter a valid phone Number!',
               },
             })}
           />
@@ -100,13 +136,27 @@ function AddNewEmployeeForm({ onCloseModal }) {
           label="Employee Image:"
           name="avatar"
           error={errors?.avatarUrl?.message}>
+          <p
+            style={{
+              fontSize: 'small',
+              fontWeight: '500',
+              position: 'absolute',
+              right: '1rem',
+              top: '.3rem',
+              color: 'var(--color-primary-800)',
+            }}>
+            {' '}
+            (Square size works best)
+          </p>
           <FileInput
             type="file"
             id="avatar"
             accept="image/*"
-            disabled={isAddingEmployee}
+            disabled={isWorking}
             {...register('avatarUrl', {
-              required: 'Image is necessary as it makes it easy to find him 😉',
+              required: isUpdatingSession
+                ? false
+                : 'Image is necessary as it makes it easy to find him 😉',
             })}
           />
         </FormRow>
@@ -115,14 +165,14 @@ function AddNewEmployeeForm({ onCloseModal }) {
             type="reset"
             variation="secondary"
             onClick={() => onCloseModal?.()}
-            disabled={isAddingEmployee}>
+            disabled={isWorking}>
             Cancle
           </Button>
           <Button
             type="submit"
-            disabled={isAddingEmployee}
-            iconStart={isAddingEmployee && <SpinnerMini />}>
-            {isAddingEmployee ? 'Adding ...' : 'Add Employee'}
+            disabled={isWorking}
+            iconStart={isWorking && <SpinnerMini />}>
+            {renderButtonContent}
           </Button>
         </ButtonsContainer>
       </StyledForm>

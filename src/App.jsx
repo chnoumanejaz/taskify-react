@@ -16,6 +16,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './components/ProtectedRoute';
+import { DarkModeProvider } from './context/darkModeContext';
 
 const Container = styled.div`
   display: flex;
@@ -34,37 +35,39 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <GlobalStyles />
-      <Container>
-        <BrowserRouter>
-          <Routes>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Signup />} />
-            <Route
-              element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
-              }>
-              <Route index element={<Navigate replace to={'home'} />} />
-              <Route path="home" element={<Home />} />
-              <Route path="manage" element={<ManageAccount />} />
-              <Route path="employee" element={<Employees />} />
-              <Route path="project/:projectId" element={<ProjectDetail />} />
-              <Route path="task/:taskId" element={<TaskDetail />} />
-            </Route>
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <ToastContainer
-          autoClose={3000}
-          pauseOnFocusLoss={false}
-          theme="light"
-        />
-      </Container>
-    </QueryClientProvider>
+    <DarkModeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <GlobalStyles />
+        <Container>
+          <BrowserRouter>
+            <Routes>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Signup />} />
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }>
+                <Route index element={<Navigate replace to={'home'} />} />
+                <Route path="home" element={<Home />} />
+                <Route path="manage" element={<ManageAccount />} />
+                <Route path="employee" element={<Employees />} />
+                <Route path="project/:projectId" element={<ProjectDetail />} />
+                <Route path="task/:taskId" element={<TaskDetail />} />
+              </Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <ToastContainer
+            autoClose={3000}
+            pauseOnFocusLoss={false}
+            theme="light"
+          />
+        </Container>
+      </QueryClientProvider>
+    </DarkModeProvider>
   );
 }
 
