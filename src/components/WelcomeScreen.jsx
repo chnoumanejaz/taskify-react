@@ -4,6 +4,8 @@ import { MdOutlineCreateNewFolder, MdAddTask } from 'react-icons/md';
 import Heading from './Heading';
 import Modal from './Modal';
 import AddProjectForm from './AddProjectForm';
+import ModalSide from './ModalSide';
+import AddNewTaskForm from './AddNewTaskForm';
 
 const StyledMessageContainer = styled.div`
   display: flex;
@@ -62,7 +64,15 @@ function WelcomeScreen({ name = 'project' }) {
             </Button>
           </Modal.Open>
         ) : (
-          <Button iconEnd={<MdAddTask />}>Add a Task</Button>
+          <ModalSide>
+            <ModalSide.Open openName="add-task">
+              <Button iconEnd={<MdAddTask />}>Add a Task</Button>
+            </ModalSide.Open>
+
+            <ModalSide.Window name="add-task">
+              <AddNewTaskForm />
+            </ModalSide.Window>
+          </ModalSide>
         )}
       </StyledMessageContainer>
 

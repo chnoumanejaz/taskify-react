@@ -40,7 +40,7 @@ const HeaderEmployees = styled.div`
   }
 `;
 // FIXME: seprate the search box from all pages and add as a component
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   position: relative;
   & input {
     width: 100%;

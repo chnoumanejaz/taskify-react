@@ -4,16 +4,10 @@ import SideBar from './SideBar';
 import styled, { css } from 'styled-components';
 import useGetProjects from '../features/projects/useGetProjects';
 import Spinner from './Spinner';
-import Heading from './Heading';
 import BasicScreen from './BasicScreen';
 
 const StyledAppLayout = styled.div`
   margin-top: 8rem;
-`;
-
-const SpinContainer = styled.div`
-  display: grid;
-  place-items: center;
 `;
 
 const Main = styled.main`
@@ -35,12 +29,7 @@ function AppLayout() {
       <NavBar />
       <StyledAppLayout>
         {isGettingProjects && currentRoute === '/home' ? (
-          <SpinContainer>
-            <Spinner />
-            <Heading as="h3" style={{ margin: '0 auto' }}>
-              Getting Projects ...
-            </Heading>
-          </SpinContainer>
+          <Spinner message="Getting Projects ..." />
         ) : null}
         {projects?.length ? <SideBar /> : null}
         {projects?.length && currentRoute === '/home' ? (

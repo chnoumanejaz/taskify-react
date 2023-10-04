@@ -4,6 +4,7 @@ const StyledErrorMessage = styled.div`
   text-transform: none;
   font-weight: 500;
   text-align: center;
+  margin: 2rem 0;
   & span {
     color: var(--color-primary-600);
     display: block;

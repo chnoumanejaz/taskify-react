@@ -22,6 +22,7 @@ const StyledNavLink = styled(NavLink)`
     align-items: center;
     border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid transparent;
+    margin-top: .2rem;
     & .timeAgo {
       font-size: 1.2rem;
       font-family: 'Mooli';
@@ -35,10 +36,8 @@ const StyledNavLink = styled(NavLink)`
       align-items: baseline;
       border-radius: 0 0 0.5rem 0.5rem;
       margin-bottom: 0.2rem;
-      opacity: 0;
-      max-height: 0;
-      padding: 0;
-      transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+      display: none;
+      padding: 0.4rem;
 
       & div {
         width: 3rem;
@@ -106,9 +105,7 @@ const StyledNavLink = styled(NavLink)`
       display: none;
     }
     & + .actions {
-      opacity: 1;
-      padding: 0.5rem;
-      max-height: fit-content;
+      display: flex;
     }
     & svg {
       opacity: 1;
@@ -116,6 +113,8 @@ const StyledNavLink = styled(NavLink)`
     }
   }
 `;
+
+// MAYBE: add description in a tooltip 
 
 /* eslint-disable react/prop-types */
 function ProjectItem({ project }) {
@@ -130,6 +129,7 @@ function ProjectItem({ project }) {
             <span>{'(' + project.category + ')'}</span>
           </div>
           <AiOutlineArrowRight />
+          {/* BUG: fix time and align it at some nice place */}
           <span className="timeAgo">{formatDateTime(project.created_at)}</span>
         </li>
         <div className="actions">
@@ -153,6 +153,7 @@ function ProjectItem({ project }) {
           disabled={isDeleting}
           onConfirm={() => {
             deleteProject(project.id);
+            // FIXME: if project deleted successfuly then navigate
             navigate('/');
           }}
         />

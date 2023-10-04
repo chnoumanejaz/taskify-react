@@ -53,8 +53,10 @@ function App() {
                 <Route index element={<Navigate replace to={'home'} />} />
                 <Route path="home" element={<Home />} />
                 <Route path="manage" element={<ManageAccount />} />
+
                 <Route path="employee" element={<Employees />} />
                 <Route path="project/:projectId" element={<ProjectDetail />} />
+                {/* <Route path="project/:projectId" element={<AddTaskForm />} /> */}
                 <Route path="task/:taskId" element={<TaskDetail />} />
               </Route>
               <Route path="*" element={<PageNotFound />} />

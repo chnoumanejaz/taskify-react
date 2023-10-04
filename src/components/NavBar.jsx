@@ -92,6 +92,10 @@ function NavBar() {
 
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
+  const userName = user?.user_metadata?.fullname;
+  const correctUserName =
+    userName.length < 26 ? userName : userName.slice(0, 26) + ' ...';
+
   return (
     <StyledNavBar>
       <Link to="/">
@@ -103,7 +107,7 @@ function NavBar() {
           alt={user?.user_metadata?.fullname.split(' ')[0]}
         />
         <p>
-          Welcome, {user?.user_metadata?.fullname}
+          Welcome, {correctUserName}
           <span>Last Login: {formatDate(user?.last_sign_in_at)}</span>
         </p>
       </div>

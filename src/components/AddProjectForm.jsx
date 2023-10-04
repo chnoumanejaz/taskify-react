@@ -112,11 +112,11 @@ function AddProjectForm({ projectToUpdate = {}, onCloseModal }) {
               position: 'absolute',
               fontSize: 'small',
               color: 'var(--color-primary-600)',
-              right: '2rem',
+              right: '8rem',
               top: '.3rem',
               fontWeight: '500',
             }}>
-            (e.g: Development, Designing ...)
+            (e.g: Website, Game ...)
           </span>
           <Input
             type="text"

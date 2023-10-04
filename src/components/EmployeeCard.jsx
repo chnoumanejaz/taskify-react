@@ -61,8 +61,10 @@ const Card = styled.div`
 
       gap: 1rem;
       & .image {
-        width: 7rem;
-        height: 7rem;
+        min-width: 7rem;
+        max-width: 7rem;
+        min-height: 7rem;
+        max-height: 7rem;
       }
     `}
 `;
@@ -142,6 +144,12 @@ const CardFooter = styled.div`
 function EmployeeCard({ employee, view }) {
   const { isLoading: isDeleting, deleteEmployee } = useDeleteEmployee();
 
+  // FIXME: make a seprate helper function and set all the things that are editable and desstroy whole design
+  const employeeName =
+    employee?.name.length < 20
+      ? employee.name
+      : employee.name.slice(0, 20) + ' ...';
+
   return (
     <Modal>
       <Card view={view}>
@@ -152,19 +160,19 @@ function EmployeeCard({ employee, view }) {
                 ? employee.avatarUrl
                 : 'https://ih1.redbubble.net/image.485923661.1240/st,small,507x507-pad,600x600,f8f8f8.u1.jpg'
             }
-            alt={`image-of-${employee.name}`}
+            alt={`image-of-${employeeName}`}
           />
         </div>
         {view === 'standard' && (
           <p>
-            {employee.name}
+            {employeeName}
             <span>{employee.phone}</span>
           </p>
         )}
         <CardFooter view={view}>
           {view === 'minimal' && (
             <p>
-              {employee.name}
+              {employeeName}
               <span>{employee.phone}</span>
             </p>
           )}
@@ -175,7 +183,7 @@ function EmployeeCard({ employee, view }) {
                   <MdDeleteOutline />
                 </div>
               </Modal.Open>
-              <Modal.Open openName='update-standard'>
+              <Modal.Open openName="update-standard">
                 <div>
                   <BiEdit />
                 </div>
@@ -218,7 +226,7 @@ function EmployeeCard({ employee, view }) {
           <Modal.Window name="update-minimal">
             <AddNewEmployeeForm employeeToUpdate={employee} />
           </Modal.Window>
-          
+
           <Modal.Window name="update-standard">
             <AddNewEmployeeForm employeeToUpdate={employee} />
           </Modal.Window>
