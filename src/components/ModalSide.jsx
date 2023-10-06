@@ -1,21 +1,33 @@
-import styled from 'styled-components';
-import { FaAngleDoubleRight } from 'react-icons/fa';
-import formatDate from '../utils/formatDate';
-import { cloneElement, createContext, useContext, useState } from 'react';
-import { useOutsideClick } from '../hooks/useOutsideClick';
-import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cloneElement, createContext, useContext, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { FaAngleDoubleRight } from 'react-icons/fa';
+import styled from 'styled-components';
+import { useOutsideClick } from '../hooks/useOutsideClick';
+import formatDate from '../utils/formatDate';
+import Heading from './Heading';
+
+const OverlayModalSide = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--backdrop-color);
+  backdrop-filter: blur(1.5px);
+  z-index: 30;
+  transition: all 0.3s;
+`;
 
 const ModalSideContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
-  inset: 0;
-  left: 30%;
+  right: 0;
+  left: 23%;
   background-color: var(--color-grey-100);
-  box-shadow: var(--shadow-md);
   z-index: 10;
-  /* text-align: left; */
+  border-left: 10px solid var(--color-grey-300);
 `;
 
 const FormHeader = styled.div`
@@ -25,12 +37,21 @@ const FormHeader = styled.div`
   /* justify-content: center; */
   justify-content: space-between;
   align-items: center;
+  & div {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    color: var(--color-primary-600);
+    & h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+  }
 
   & svg {
     width: 2.2rem;
     height: 2.2rem;
     cursor: pointer;
-    color: var(--color-primary-600);
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     &:hover {
       transform: translateX(0.5rem) scale(1.1);
@@ -92,7 +113,7 @@ function Open({ children, openName }) {
   return cloneElement(children, { onClick: () => open(openName) });
 }
 
-function Window({ children, name }) {
+function Window({ children, name, heading }) {
   const { openName, close } = useContext(ModalSideContext);
 
   const ref = useOutsideClick(close);
@@ -107,22 +128,29 @@ function Window({ children, name }) {
         onEnded="closed"
         variants={variants}
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: 0,
           right: 0,
+          bottom: 0,
+          overflowY: 'scroll',
           width: '100%',
           height: '100vh',
           zIndex: '10',
         }}>
-        <ModalSideContainer ref={ref}>
-          <FormHeader>
-            <FaAngleDoubleRight onClick={close} />
-            <Details>
-              <span>Date:</span> {formatDate(new Date())}
-            </Details>
-          </FormHeader>
-          {cloneElement(children, { onCloseModalSide: close })}
-        </ModalSideContainer>
+        <OverlayModalSide>
+          <ModalSideContainer ref={ref}>
+            <FormHeader>
+              <div>
+                <FaAngleDoubleRight onClick={close} />
+                <Heading as="h3">{heading}</Heading>
+              </div>
+              <Details>
+                <span>Date:</span> {formatDate(new Date())}
+              </Details>
+            </FormHeader>
+            {cloneElement(children, { onCloseModalSide: close })}
+          </ModalSideContainer>
+        </OverlayModalSide>
       </motion.div>
     </AnimatePresence>,
     document.body

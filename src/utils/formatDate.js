@@ -1,11 +1,10 @@
 export default function formatDate(dateString) {
   const dateObject = new Date(dateString);
   const options = {
+    weekday: 'long',
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
   };
   const formattedDate = dateObject.toLocaleDateString(undefined, options);
   return formattedDate;

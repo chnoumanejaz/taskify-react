@@ -16,7 +16,13 @@ export function useDeleteEmployee() {
       });
     },
 
-    onError: err => toast.error(err.message),
+    onError: () =>
+      toast.error(
+        'Unable to delete this employee. Please make sure this employee dont have any task assigned.',
+        {
+          autoClose: 5000,
+        }
+      ),
   });
 
   return { isLoading, deleteEmployee };

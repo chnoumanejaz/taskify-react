@@ -31,6 +31,9 @@ export async function getProjects() {
 
 export async function deleteProject(id) {
   const { data, error } = await supabase.from('projects').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  if (error)
+    throw new Error(
+      "Unable to delete this Project. please make sure you don't have any tasks in it."
+    );
   return data;
 }

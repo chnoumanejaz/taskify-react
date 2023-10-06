@@ -17,7 +17,10 @@ export function useDeleteProject() {
       });
     },
 
-    onError: err => toast.error(err.message),
+    onError: err =>
+      toast.error(err.message, {
+        autoClose: 6000,
+      }),
   });
 
   return { isLoading, deleteProject };

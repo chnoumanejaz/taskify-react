@@ -52,3 +52,26 @@ export async function createEditTasks(newTask, id) {
 
   return data;
 }
+
+// Delete a task
+export async function deleteTask(id) {
+  const { data, error } = await supabase.from('tasks').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Get tasks by id
+export async function getTasksById(taskId) {
+  const { data: session } = await supabase.auth.getSession();
+  const userId = session?.session?.user?.id;
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*, employees(*), projects(*)')
+    .eq('id', taskId)
+    .eq('created_by', userId)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}

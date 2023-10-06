@@ -42,9 +42,9 @@ function AddNewEmployeeForm({ employeeToUpdate = {}, onCloseModal }) {
       false: 'Add Employee',
     },
   };
+  const renderButtonContent = buttonLabels[isUpdatingSession][isWorking];
 
   // BUG: give the width to any of the input field to set the modal overlapping in the browser mozilla
-  const renderButtonContent = buttonLabels[isUpdatingSession][isWorking];
 
   const {
     register,
@@ -145,7 +145,6 @@ function AddNewEmployeeForm({ employeeToUpdate = {}, onCloseModal }) {
               top: '.3rem',
               color: 'var(--color-primary-800)',
             }}>
-            {' '}
             (Square size works best)
           </p>
           <FileInput

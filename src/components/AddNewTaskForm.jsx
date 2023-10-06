@@ -1,20 +1,22 @@
-import Input from './Input';
-import TextArea from './Textarea';
-import FormRowHorizontal from './FormRowHorizontal';
-import SelectButton from './SelectButton';
-import { useGetEmployees } from '../features/employees/useGetEmployees';
-import Button from './Button';
-import FileInput from './FileInput';
-import ButtonsContainer from './ButtonsContainer';
-import Modal from './Modal';
-import AddNewEmployeeForm from './AddNewEmployeeForm';
-import styled from 'styled-components';
-import Heading from './Heading';
 import { useForm } from 'react-hook-form';
-import { useAddTask } from '../features/tasks/useAddTask';
-import SpinnerMini from './SpinnerMini';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import useGetUser from '../features/authentication/useGetUser';
+import { useGetEmployees } from '../features/employees/useGetEmployees';
+import { useAddTask } from '../features/tasks/useAddTask';
+import AddNewEmployeeForm from './AddNewEmployeeForm';
+import Button from './Button';
+import ButtonsContainer from './ButtonsContainer';
+import FileInput from './FileInput';
+import FormRowHorizontal from './FormRowHorizontal';
+import Heading from './Heading';
+import Input from './Input';
+import Modal from './Modal';
+import SelectButton from './SelectButton';
+import SpinnerMini from './SpinnerMini';
+import TextArea from './Textarea';
+import { useUpdateTask } from '../features/tasks/useUpdateTask';
+import { useState } from 'react';
 
 const FormBody = styled.div`
   padding: 1rem 2rem;
@@ -30,40 +32,74 @@ const FormBody = styled.div`
 `;
 
 /* eslint-disable react/prop-types */
-function AddNewTaskForm({ onCloseModalSide }) {
+function AddNewTaskForm({ onCloseModalSide, taskToUpdate = {} }) {
+  const { id: updateId, ...editValues } = taskToUpdate;
+  const isUpdatingSession = Boolean(updateId);
+
+  const { user } = useGetUser();
   const { employees, isLoading: isGettingEmployees } = useGetEmployees();
   const { projectId } = useParams();
-  const { addTask, isLoading: isAdding } = useAddTask();
-  const { user } = useGetUser();
-  
+  const { addTask, isLoading: isAddingTask } = useAddTask();
+  const { isLoading: isUpdatingTask, updateTask } = useUpdateTask();
+
+  const isWorking = isAddingTask || isUpdatingTask;
+
+  const buttonLabels = {
+    true: {
+      true: 'Updating ...',
+      false: 'Update Task',
+    },
+    false: {
+      true: 'Adding ...',
+      false: 'Add Task',
+    },
+  };
+  const renderButtonContent = buttonLabels[isUpdatingSession][isWorking];
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: isUpdatingSession ? editValues : {},
+  });
 
   function onSubmit(data) {
     const fileUrl =
       typeof data.fileUrl === 'string' ? data.fileUrl : data.fileUrl[0];
-
-    addTask(
-      {
-        ...data,
-        fileUrl,
-        forProject: projectId,
-        created_by: user?.id,
-      },
-      {
-        onSuccess: () => onCloseModalSide?.(),
-      }
-    );
+     if (isUpdatingSession)
+      updateTask(
+        {
+          newTaskData: { ...data, fileUrl },
+          id: updateId,
+        },
+        {
+          onSuccess: () => {
+            onCloseModalSide?.();
+          },
+        }
+      );
+    else
+      addTask(
+        {
+          ...data,
+          fileUrl,
+          forProject: projectId,
+          status: 'due',
+          created_by: user?.id,
+        },
+        {
+          onSuccess: () => onCloseModalSide?.(),
+        }
+      );
   }
 
   return (
     <Modal>
       <FormBody>
-        <Heading as="h2">Add a new task</Heading>
+        <Heading as="h2">
+          {isUpdatingSession ? 'Update the task' : 'Add a new task'}
+        </Heading>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormRowHorizontal
@@ -75,7 +111,7 @@ function AddNewTaskForm({ onCloseModalSide }) {
               placeholder="Enter the task name "
               id="name"
               forr="mainPage"
-              disabled={isAdding}
+              disabled={isWorking}
               {...register('name', {
                 required: 'Task name is required.',
               })}
@@ -90,7 +126,7 @@ function AddNewTaskForm({ onCloseModalSide }) {
               id="detail"
               placeholder="Enter the description or details of task"
               rows={3}
-              disabled={isAdding}
+              disabled={isWorking}
               {...register('detail')}
             />
           </FormRowHorizontal>
@@ -103,7 +139,7 @@ function AddNewTaskForm({ onCloseModalSide }) {
               placeholder="Task domain e.g: designing, development"
               id="domain"
               forr="mainPage"
-              disabled={isAdding}
+              disabled={isWorking}
               {...register('domain', {
                 required: 'Please enter the task domain.',
               })}
@@ -122,7 +158,7 @@ function AddNewTaskForm({ onCloseModalSide }) {
                   {...register('assignedTo', {
                     required: 'Please Select an employee.',
                   })}
-                  disabled={isGettingEmployees || isAdding}>
+                  disabled={isGettingEmployees || isWorking}>
                   <option disabled>Select Employee</option>
                   {employees?.map(employee => (
                     <option value={employee.id} key={employee.id}>
@@ -133,7 +169,7 @@ function AddNewTaskForm({ onCloseModalSide }) {
               </>
             ) : (
               <Modal.Open openName="add-newEmployee">
-                <Button type="button">
+                <Button type="button" disabled={isGettingEmployees}>
                   You dont have any employee (Add new employee)
                 </Button>
               </Modal.Open>
@@ -148,30 +184,44 @@ function AddNewTaskForm({ onCloseModalSide }) {
               type="date"
               forr="mainPage"
               id="dueDate"
-              disabled={isAdding}
+              disabled={isWorking}
               {...register('dueDate', {
                 required: 'Please select the due date for this task',
               })}
             />
           </FormRowHorizontal>
 
-          <FormRowHorizontal
-            label="Task Priority:"
-            name="priority"
-            error={errors?.priority?.message}>
+          <FormRowHorizontal label="Task Priority:" name="priority">
             <SelectButton
               id="priority"
               forr="mainPage"
-              disabled={isAdding}
+              disabled={isWorking}
               {...register('priority')}>
-              <option disabled selected>
+              <option disabled selected value="no">
                 Select Priority
               </option>
+              <option value="urgent">Urgent</option>
               <option value="high">High</option>
               <option value="medium">Medium</option>
               <option value="low">Low</option>
             </SelectButton>
           </FormRowHorizontal>
+
+          {isUpdatingSession ? (
+            <FormRowHorizontal label="Task Status:" name="Status">
+              <SelectButton
+                id="Status"
+                forr="mainPage"
+                disabled={isWorking}
+                {...register('status')}>
+                <option disabled selected value="no">
+                  Select Status
+                </option>
+                <option value="complete">Complete</option>
+                <option value="due">Due</option>
+              </SelectButton>
+            </FormRowHorizontal>
+          ) : null}
 
           <FormRowHorizontal
             label="Related Document:"
@@ -179,11 +229,13 @@ function AddNewTaskForm({ onCloseModalSide }) {
             error={errors?.fileUrl?.message}>
             <FileInput
               type="file"
-              disabled={isAdding}
+              disabled={isWorking}
               accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               id="file"
               {...register('fileUrl', {
-                required: 'Document reference is required.',
+                required: isUpdatingSession
+                  ? false
+                  : 'Document reference is required.',
               })}
             />
           </FormRowHorizontal>
@@ -191,16 +243,16 @@ function AddNewTaskForm({ onCloseModalSide }) {
           <ButtonsContainer side="right" top="2rem">
             <Button
               variation="secondary"
-              disabled={isAdding}
+              disabled={isWorking}
               type="reset"
-              onClick={reset}>
+              onClick={() => onCloseModalSide?.()}>
               Cancle
             </Button>
             <Button
               type="submit"
-              disabled={isAdding}
-              iconStart={isAdding && <SpinnerMini />}>
-              {isAdding ? 'Adding ...' : 'Add the task'}
+              disabled={isWorking}
+              iconStart={isWorking && <SpinnerMini />}>
+              {renderButtonContent}
             </Button>
           </ButtonsContainer>
         </form>

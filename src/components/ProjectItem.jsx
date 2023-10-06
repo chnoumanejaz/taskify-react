@@ -22,10 +22,11 @@ const StyledNavLink = styled(NavLink)`
     align-items: center;
     border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid transparent;
-    margin-top: .2rem;
+    margin-top: 0.2rem;
     & .timeAgo {
       font-size: 1.2rem;
       font-family: 'Mooli';
+      white-space: nowrap;
     }
     & + .actions {
       background-color: var(--color-grey-200);
@@ -114,7 +115,7 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-// MAYBE: add description in a tooltip 
+// MAYBE: add description in a tooltip
 
 /* eslint-disable react/prop-types */
 function ProjectItem({ project }) {
@@ -152,9 +153,9 @@ function ProjectItem({ project }) {
           resource={project.name}
           disabled={isDeleting}
           onConfirm={() => {
-            deleteProject(project.id);
-            // FIXME: if project deleted successfuly then navigate
-            navigate('/');
+            deleteProject(project.id, {
+              onSuccess: () => navigate('/'),
+            });
           }}
         />
       </Modal.Window>

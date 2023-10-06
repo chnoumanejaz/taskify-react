@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useOutsideClick } from '../hooks/useOutsideClick';
 import { createPortal } from 'react-dom';
 import { GrFormClose } from 'react-icons/gr';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const StyledModal = styled.div`
   position: fixed;
@@ -50,6 +51,25 @@ const Button = styled.button`
   }
 `;
 
+const containerVariants = {
+  open: {
+    y: 320,
+    opacity: 1,
+    transition: {
+      y: { type: 'spring', stiffness: 800, damping: 50 },
+      opacity: { duration: 0.4 },
+    },
+  },
+  closed: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      y: { type: 'spring', stiffness: 300, damping: 30 },
+      opacity: { duration: 0.5 },
+    },
+  },
+};
+
 const ModalContext = createContext();
 
 /* eslint-disable react/prop-types */
@@ -85,12 +105,20 @@ function Window({ children, name }) {
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref}>
-        <Button onClick={close}>
-          <GrFormClose />
-        </Button>
-        <div>{cloneElement(children, { onCloseModal: close })}</div>
-      </StyledModal>
+      <AnimatePresence>
+        <motion.div
+          variants={containerVariants}
+          initial="closed"
+          animate="open"
+          exit="closed">
+          <StyledModal ref={ref}>
+            <Button onClick={close}>
+              <GrFormClose />
+            </Button>
+            <div>{cloneElement(children, { onCloseModal: close })}</div>
+          </StyledModal>
+        </motion.div>
+      </AnimatePresence>
     </Overlay>,
     document.body
   );

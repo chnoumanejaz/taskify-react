@@ -39,7 +39,7 @@ const StyledMessageContainer = styled.div`
 `;
 
 /* eslint-disable react/prop-types */
-function WelcomeScreen({ name = 'project' }) {
+function WelcomeScreen({ name = 'project', projectName = '' }) {
   return (
     <Modal>
       <StyledMessageContainer>
@@ -47,13 +47,24 @@ function WelcomeScreen({ name = 'project' }) {
           <Heading as="h1">
             {name === 'project' ? '👋 Welcome' : '😉 Add tasks'}
           </Heading>
-          <p>
-            <span className="span">Taskify </span> enables effortless project
-            management.
-          </p>
+          {name === 'project' ? (
+            <p>
+              <span className="span">Taskify </span> enables effortless project
+              management.
+            </p>
+          ) : null}
+
+          {name === 'task' ? (
+            <p>
+              <span className="span">{projectName} </span> don&apos;t have any
+              tasks init
+            </p>
+          ) : null}
+
           <p>
             {name === 'task'
-              ? 'Start adding your tasks'
+              ? 'Start adding your tasks in ' +
+                projectName.toString().replaceAll(',', '')
               : 'Start by creating your 1st project'}
           </p>
         </div>
