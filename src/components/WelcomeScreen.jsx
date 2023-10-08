@@ -6,6 +6,7 @@ import Modal from './Modal';
 import AddProjectForm from './AddProjectForm';
 import ModalSide from './ModalSide';
 import AddNewTaskForm from './AddNewTaskForm';
+import { handleTheShortData } from '../utils/handleTheData';
 
 const StyledMessageContainer = styled.div`
   display: flex;
@@ -56,15 +57,17 @@ function WelcomeScreen({ name = 'project', projectName = '' }) {
 
           {name === 'task' ? (
             <p>
-              <span className="span">{projectName} </span> don&apos;t have any
-              tasks init
+              <span className="span">
+                {handleTheShortData(projectName).toString().replaceAll(',', '')}
+              </span>{' '}
+              don&apos;t have any tasks init
             </p>
           ) : null}
 
           <p>
             {name === 'task'
               ? 'Start adding your tasks in ' +
-                projectName.toString().replaceAll(',', '')
+                handleTheShortData(projectName).toString().replaceAll(',', '')
               : 'Start by creating your 1st project'}
           </p>
         </div>
@@ -80,7 +83,9 @@ function WelcomeScreen({ name = 'project', projectName = '' }) {
               <Button iconEnd={<MdAddTask />}>Add a Task</Button>
             </ModalSide.Open>
 
-            <ModalSide.Window name="add-task">
+            <ModalSide.Window
+              name="add-task"
+              heading="Note! Please make sure you have added employees">
               <AddNewTaskForm />
             </ModalSide.Window>
           </ModalSide>

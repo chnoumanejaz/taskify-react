@@ -9,8 +9,10 @@ import ButtonIcon from './ButtonIcon';
 import useLogout from '../features/authentication/useLogout';
 import SpinnerMini from './SpinnerMini';
 import useGetUser from '../features/authentication/useGetUser';
-import formatDate from '../utils/formatDate';
+import { formatDateWithTime } from '../utils/formatDate';
 import { useDarkMode } from '../context/darkModeContext';
+import { handleTheShortData } from '../utils/handleTheData';
+import CustomTooltip from './CustomTooltip';
 
 const StyledNavBar = styled.nav`
   background-color: var(--color-grey-0);
@@ -93,8 +95,6 @@ function NavBar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const userName = user?.user_metadata?.fullname;
-  const correctUserName =
-    userName.length < 26 ? userName : userName.slice(0, 26) + ' ...';
 
   return (
     <StyledNavBar>
@@ -107,8 +107,8 @@ function NavBar() {
           alt={user?.user_metadata?.fullname.split(' ')[0]}
         />
         <p>
-          Welcome, {correctUserName}
-          <span>Last Login: {formatDate(user?.last_sign_in_at)}</span>
+          Welcome, {handleTheShortData(userName)}
+          <span>Last Login: {formatDateWithTime(user?.last_sign_in_at)}</span>
         </p>
       </div>
       <List>
@@ -125,16 +125,20 @@ function NavBar() {
           </StyledLink>
         </li>
 
-        {/* FIXME: below to buttons are not equal in padding as of above to  */}
         <li>
-          <ButtonIcon disabled={isLoading} onClick={toggleDarkMode}>
-            {!isDarkMode ? <FaRegMoon /> : <BiSun />}
-          </ButtonIcon>
+          <CustomTooltip title="Change theme">
+            <ButtonIcon disabled={isLoading} onClick={toggleDarkMode}>
+              {!isDarkMode ? <FaRegMoon /> : <BiSun />}
+            </ButtonIcon>
+          </CustomTooltip>
         </li>
+
         <li>
-          <ButtonIcon onClick={logout} disabled={isLoading}>
-            {isLoading ? <SpinnerMini /> : <HiOutlineLogout />}
-          </ButtonIcon>
+          <CustomTooltip title='Logout'>
+            <ButtonIcon onClick={logout} disabled={isLoading}>
+              {isLoading ? <SpinnerMini /> : <HiOutlineLogout />}
+            </ButtonIcon>
+          </CustomTooltip>
         </li>
       </List>
     </StyledNavBar>

@@ -75,3 +75,16 @@ export async function getTasksById(taskId) {
   if (error) throw new Error(error.message);
   return data;
 }
+
+// Update only the status of task
+export async function updateSingleColumn(id, doneStatus) {
+  const newValue = doneStatus !== true ? 'due' : 'complete';
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .update({ status: newValue })
+    .eq('id', id);
+
+  if (error) throw new Error(error.message);
+  return data;
+}

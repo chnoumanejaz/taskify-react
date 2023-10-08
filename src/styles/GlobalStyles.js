@@ -41,8 +41,7 @@ const GlobalStyles = createGlobalStyle`
         
         --color-silver-100: #e5e7eb;
         --color-silver-700: #374151;
-        --color-teal-100: #CCFBF1;
-        --color-teal-700: #0F766E;
+        
 
         --color-red-100: #fee2e2;
         --color-red-700: #b91c1c;
@@ -76,8 +75,10 @@ const GlobalStyles = createGlobalStyle`
 
         --color-silver-100: #374151;
         --color-silver-700: #f3f4f6;
-        --color-teal-100: #0F766E;
-        --color-teal-700: #CCFBF1;
+        
+        --color-primary-100: #025a51;
+        --color-primary-600: #058177;
+        --color-primary-800: #e2faf5;
 
         --color-red-100: #fee2e2;
         --color-red-700: #b91c1c;
@@ -104,21 +105,19 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s, border 0.3s;
 }
 
-/* FIXME: change the colors of scrollbar */
-
+ 
 ::-webkit-scrollbar {
     width: 6px;
     height: 4px;
 }
-/* BUG: fix the scrollbr for the mozilla firefox */
-
+ 
 ::-webkit-scrollbar-thumb {
-    background-color: #222;
+    background-color: var(--color-grey-300);
     border-radius: 2.8rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #eee;
+    background-color: var(--color-grey-600);
 }
 
 html {
@@ -151,12 +150,12 @@ button {
 *:disabled {
     cursor: not-allowed;
     opacity: 0.7;
-    ${'' /* background-color: red; */}
 }
 
 input:focus,
 button:focus,
 textarea:focus,
+a:focus,
 select:focus {
     outline: 2px solid #14B8A6;
     outline-offset: -1px;

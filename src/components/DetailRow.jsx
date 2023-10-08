@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { BiCloudDownload } from 'react-icons/bi';
 import priorities from '../data/priorities';
+import { handleTheShortData } from '../utils/handleTheData';
 const StyledDetailRow = styled.div`
   display: grid;
   grid-template-columns: 22rem 1fr;
@@ -101,7 +102,9 @@ function DetailRow({ label, data, img = {}, priority, file, domain }) {
           </p>
         ) : null}
 
-        {domain ? <p className="data domain">{domain}</p> : null}
+        {domain ? (
+          <p className="data domain">{handleTheShortData(domain)}</p>
+        ) : null}
 
         {file ? (
           <FileDownloadButton href={file}>

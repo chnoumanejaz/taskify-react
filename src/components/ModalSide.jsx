@@ -75,7 +75,7 @@ const variants = {
     x: 0,
     opacity: 1,
     transition: {
-      x: { type: 'spring', stiffness: 300, damping: 30 },
+      x: { type: 'spring', stiffness: 350, damping: 30 },
     },
   },
   closed: {

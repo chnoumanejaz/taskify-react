@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import Heading from './Heading';
 import { calculateTimeDifference } from '../utils/calculateTimeDifference';
+import { handleTheLongData } from '../utils/handleTheData';
+import Heading from './Heading';
 
 const TaskHead = styled.div`
   background-color: var(--color-grey-100);
@@ -54,7 +55,7 @@ function TaskDetailHeader({ task }) {
   return (
     <TaskHead>
       <div>
-        <Heading as="h1">{name}</Heading>
+        <Heading as="h1">{handleTheLongData(name)}</Heading>
         <DueDate>
           <span>Due: </span>{' '}
           <p style={{ color: colorsDueDate }}>

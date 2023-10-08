@@ -1,9 +1,9 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 const TableRow = styled.div`
   display: grid;
   // checkbox, priority, name, domain, date, assigned to, details btn
-  grid-template-columns: 4rem 6rem 30rem 20rem 15rem 10rem 8rem;
+  grid-template-columns: 4rem 6rem 25rem 25rem 15rem 10rem 8rem;
   column-gap: 1rem;
   align-items: center;
   padding: 1rem;
@@ -42,6 +42,7 @@ const TableRow = styled.div`
     min-height: 4rem;
     border-radius: 50%;
     margin: 0 auto;
+    border: 2px solid var(--color-primary-600);
   }
 
   ${props =>
@@ -56,4 +57,4 @@ const TableRow = styled.div`
     `}
 `;
 
-export default TableRow
+export default TableRow;

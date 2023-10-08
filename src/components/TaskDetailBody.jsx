@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import DetailRow from './DetailRow';
 import formatDate from '../utils/formatDate';
+import { handleTheShortData } from '../utils/handleTheData';
 
 const StyledTaskDetailBody = styled.div`
   padding: 2rem;
@@ -43,7 +44,7 @@ function TaskDetailBody({ task }) {
       <div>
         <DetailRow
           label="Assigned to:"
-          data={employeeName}
+          data={handleTheShortData(employeeName)}
           img={{ src: avatarUrl, alt: employeeName }}
         />
       </div>

@@ -16,7 +16,6 @@ const TasksContiner = styled.div`
   padding: 0 1rem;
 `;
 
-// BUG: reset the search query to = '' on everywhere
 function ProjectDetail() {
   useRedirectProject();
   const { projectId } = useParams();
@@ -33,7 +32,7 @@ function ProjectDetail() {
     );
   });
   // For the new one on the top not at end
-  let filteredTasks = filteredNotReversed?.toReversed();
+  let filteredTasks = filteredNotReversed?.reverse();
 
   let status = searchParams.get('status');
   const statusFilter = tasks?.filter(task => task.status === status);

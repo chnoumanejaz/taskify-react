@@ -4,13 +4,13 @@ import Heading from './Heading';
 const StyledTableHeader = styled.div`
   background-color: var(--color-grey-100);
   // checkbox, priority, name, domain, date, assigned to, details btn
-  grid-template-columns: 4rem 6rem 30rem 20rem 15rem 10rem 8rem;
+  grid-template-columns: 4rem 6rem 25rem 25rem 15rem 10rem 8rem;
   column-gap: 1rem;
   align-items: center;
   padding: 1.5rem 1rem;
   display: grid;
   border-bottom: 1.2px solid var(--color-grey-200);
-
+  color: var(--color-primary-800);
   & h3 {
     font-size: 1.6rem;
   }

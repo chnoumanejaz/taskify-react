@@ -25,8 +25,8 @@ const StyledLink = styled(Link)`
 `;
 
 function LoginForm() {
-  const [email, setEmail] = useState('chnoumanejaz@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  const [email, setEmail] = useState('demoapp@taskify.com');
+  const [password, setPassword] = useState('seethedemo');
   const { login, isLoading } = useLogin();
 
   function handleSubmit(e) {

@@ -5,6 +5,7 @@ import Modal from './Modal';
 import ConfirmDelete from './ConfirmDelete';
 import { useDeleteEmployee } from '../features/employees/useDeleteEmployee';
 import AddNewEmployeeForm from './AddNewEmployeeForm';
+import { handleTheShortData } from '../utils/handleTheData';
 
 const Card = styled.div`
   background-color: var(--color-grey-100);
@@ -139,16 +140,9 @@ const CardFooter = styled.div`
     `}
 `;
 
-// MAYBE: refactor this component if possible
 /* eslint-disable react/prop-types */
 function EmployeeCard({ employee, view }) {
   const { isLoading: isDeleting, deleteEmployee } = useDeleteEmployee();
-
-  // FIXME: make a seprate helper function and set all the things that are editable and desstroy whole design
-  const employeeName =
-    employee?.name.length < 20
-      ? employee.name
-      : employee.name.slice(0, 20) + ' ...';
 
   return (
     <Modal>
@@ -160,19 +154,19 @@ function EmployeeCard({ employee, view }) {
                 ? employee.avatarUrl
                 : 'https://ih1.redbubble.net/image.485923661.1240/st,small,507x507-pad,600x600,f8f8f8.u1.jpg'
             }
-            alt={`image-of-${employeeName}`}
+            alt={`image-of-${employee.name}`}
           />
         </div>
         {view === 'standard' && (
           <p>
-            {employeeName}
+            {handleTheShortData(employee.name)}
             <span>{employee.phone}</span>
           </p>
         )}
         <CardFooter view={view}>
           {view === 'minimal' && (
             <p>
-              {employeeName}
+              {handleTheShortData(employee.name)}
               <span>{employee.phone}</span>
             </p>
           )}

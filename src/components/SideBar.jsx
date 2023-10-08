@@ -81,7 +81,7 @@ function SideBar() {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           placeholder="Search by name, category"
-          sideBar
+          sidebar='true'
         />
         <List>
           {filteredData.length > 0 ? (

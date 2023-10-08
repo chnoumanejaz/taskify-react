@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import DetailRow from './DetailRow';
 import { MoreThanRow } from './TaskDetailBody';
 import useGetUser from '../features/authentication/useGetUser';
+import { handleTheLongData } from '../utils/handleTheData';
 
 const StyledTaskDetailFooter = styled.div`
   padding: 2rem;
@@ -26,8 +27,8 @@ function TaskDetailFooter({ task }) {
   return (
     <StyledTaskDetailFooter>
       <MoreThanRow>
-        <DetailRow label="Project Name:" data={name} />
-        <DetailRow label=" Category:" data={category} />
+        <DetailRow label="Project Name:" data={handleTheLongData(name)} />
+        <DetailRow label=" Category:" data={handleTheLongData(category)} />
       </MoreThanRow>
       <div>
         <DetailRow label="Description:" data={description} />

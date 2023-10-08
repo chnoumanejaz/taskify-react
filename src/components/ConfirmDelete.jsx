@@ -4,6 +4,7 @@ import ButtonsContainer from './ButtonsContainer';
 import Button from './Button';
 import { PiWarningOctagonBold } from 'react-icons/pi';
 import SpinnerMini from './SpinnerMini';
+import { handleTheLongData } from '../utils/handleTheData';
 
 const ConfirmDeleteContainer = styled.div`
   margin-top: 2rem;
@@ -56,7 +57,7 @@ function ConfirmDelete({
   return (
     <ConfirmDeleteContainer>
       <Heading as="h2">
-        Confirm deletion of {selected} {resource}
+        Confirm deletion of {selected} {handleTheLongData(resource)}
       </Heading>
       <MessageContainer>
         <Message>

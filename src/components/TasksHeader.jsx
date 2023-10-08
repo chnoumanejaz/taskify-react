@@ -29,7 +29,6 @@ const HeaderButtonsContainer = styled.div`
 
 /* eslint-disable react/prop-types */
 function TasksHeader({ searchQuery, setSearchQuery, ...props }) {
-  
   return (
     <StyledTasksHeader>
       <Heading as="h1">All Tasks</Heading>

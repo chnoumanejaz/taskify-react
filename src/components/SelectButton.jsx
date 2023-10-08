@@ -10,13 +10,13 @@ const SelectButton = styled.select`
   color: var(--color-grey-700);
   font-weight: 500;
   &:hover {
-    background-color: var(--color-primary-50);
+    background-color: var(--color-primary-100);
     color: var(--color-primary-800);
     cursor: pointer;
   }
 
   & option {
-    background-color: var(--color-primary-50);
+    background-color: var(--color-primary-100);
     color: var(--color-primary-800);
     font-weight: 500;
   }

@@ -8,14 +8,16 @@ import { useDeleteProject } from '../features/projects/useDeleteProject';
 import ConfirmDelete from './ConfirmDelete';
 import AddProjectForm from './AddProjectForm';
 import { formatDateTime } from '../utils/formatDateTime';
+import { handleTheLongData } from '../utils/handleTheData';
+import CustomTooltip from './CustomTooltip';
 
 const StyledNavLink = styled(NavLink)`
   text-transform: none;
   font-size: 1.5rem;
   font-weight: 500;
-  /* BUG: fix the focus on a project item as when there is a focus there is full black outline on everything */
-  & li {
-    padding: 1rem;
+
+  & .item {
+    padding: 1.5rem 1rem 1rem 1rem;
     background-color: var(--color-grey-100);
     display: flex;
     justify-content: space-between;
@@ -23,11 +25,22 @@ const StyledNavLink = styled(NavLink)`
     border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid transparent;
     margin-top: 0.2rem;
+    position: relative;
+
     & .timeAgo {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-family: 'Mooli';
       white-space: nowrap;
+      position: absolute;
+      right: 0.2rem;
+      top: -0.5rem;
+      color: var(--color-primary-50);
+      background-color: var(--color-primary-500);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
     }
+
     & + .actions {
       background-color: var(--color-grey-200);
       display: flex;
@@ -53,7 +66,7 @@ const StyledNavLink = styled(NavLink)`
           height: 2rem;
         }
       }
-      & div:nth-child(1) {
+      & .del {
         background-color: #fca5a5;
         & svg {
           color: var(--color-red-700);
@@ -63,7 +76,7 @@ const StyledNavLink = styled(NavLink)`
         }
       }
 
-      & div:nth-child(2) {
+      & .edit {
         background-color: var(--color-primary-200);
         & svg {
           color: var(--color-primary-700);
@@ -88,11 +101,11 @@ const StyledNavLink = styled(NavLink)`
     }
   }
 
-  &:hover li {
+  &:hover .item {
     background-color: var(--color-grey-200);
 
     & .timeAgo {
-      display: none;
+      transform: translateX(0.5rem) translateY(-0.5rem);
     }
     & svg {
       opacity: 1;
@@ -100,10 +113,10 @@ const StyledNavLink = styled(NavLink)`
     }
   }
 
-  &.active li {
+  &.active .item {
     background-color: var(--color-grey-200);
     & .timeAgo {
-      display: none;
+      transform: translateX(0.1rem) translateY(-0.2rem);
     }
     & + .actions {
       display: flex;
@@ -115,8 +128,6 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-// MAYBE: add description in a tooltip
-
 /* eslint-disable react/prop-types */
 function ProjectItem({ project }) {
   const navigate = useNavigate();
@@ -124,26 +135,30 @@ function ProjectItem({ project }) {
   return (
     <Modal>
       <StyledNavLink to={`/project/${project.id}`}>
-        <li>
+        <li className="item">
+          <span className="timeAgo">{formatDateTime(project.created_at)}</span>
           <div>
-            {project.name}
-            <span>{'(' + project.category + ')'}</span>
+            {handleTheLongData(project.name)}
+            <span>{'(' + handleTheLongData(project.category) + ')'}</span>
           </div>
           <AiOutlineArrowRight />
-          {/* BUG: fix time and align it at some nice place */}
-          <span className="timeAgo">{formatDateTime(project.created_at)}</span>
         </li>
         <div className="actions">
-          <Modal.Open openName="delete-project">
-            <div>
-              <MdOutlineDeleteOutline />
-            </div>
-          </Modal.Open>
-          <Modal.Open openName="update-project">
-            <div>
-              <BiEdit />
-            </div>
-          </Modal.Open>
+          <CustomTooltip title="Delete Project">
+            <Modal.Open openName="delete-project">
+              <div className="del">
+                <MdOutlineDeleteOutline />
+              </div>
+            </Modal.Open>
+          </CustomTooltip>
+
+          <CustomTooltip title="Update Project">
+            <Modal.Open openName="update-project">
+              <div className="edit">
+                <BiEdit />
+              </div>
+            </Modal.Open>
+          </CustomTooltip>
         </div>
       </StyledNavLink>
 
@@ -154,7 +169,7 @@ function ProjectItem({ project }) {
           disabled={isDeleting}
           onConfirm={() => {
             deleteProject(project.id, {
-              onSuccess: () => navigate('/'),
+              onSuccess: () => navigate(-1),
             });
           }}
         />

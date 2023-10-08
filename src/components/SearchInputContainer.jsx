@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import Input from './Input';
 import { BiSearchAlt } from 'react-icons/bi';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const InputContainer = styled.div`
   position: relative;
@@ -11,7 +13,7 @@ const InputContainer = styled.div`
   }
 
   ${props =>
-    props.sideBar &&
+    props.sidebar === 'true' &&
     css`
       display: flex;
       gap: 0.5rem;
@@ -39,10 +41,15 @@ function SearchInputContainer({
   searchQuery,
   setSearchQuery,
   placeholder,
-  sideBar,
+  sidebar,
 }) {
+  const location = useLocation();
+  useEffect(() => {
+    setSearchQuery('');
+  }, [location, setSearchQuery]);
+
   return (
-    <InputContainer sideBar={sideBar}>
+    <InputContainer sidebar={sidebar}>
       <Input
         type="text"
         placeholder={placeholder}

@@ -44,8 +44,6 @@ function AddNewEmployeeForm({ employeeToUpdate = {}, onCloseModal }) {
   };
   const renderButtonContent = buttonLabels[isUpdatingSession][isWorking];
 
-  // BUG: give the width to any of the input field to set the modal overlapping in the browser mozilla
-
   const {
     register,
     formState: { errors },
@@ -140,9 +138,6 @@ function AddNewEmployeeForm({ employeeToUpdate = {}, onCloseModal }) {
             style={{
               fontSize: 'small',
               fontWeight: '500',
-              position: 'absolute',
-              right: '1rem',
-              top: '.3rem',
               color: 'var(--color-primary-800)',
             }}>
             (Square size works best)
